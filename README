@@ -1,0 +1,4 @@
+Simple todo list based on HTML5 Web Storage.
+
+TODO: 
+-Add HTML5 app cache in order to work offline.

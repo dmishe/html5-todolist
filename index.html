@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML5 ToDo</title>
+		<meta name="viewport" content="height=device-height, width=device-width" />
+		<meta charset="utf-8" />
+		
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script type="text/javascript" src="js/json.js"></script>	
+
+		<script type="text/javascript">
+			Storage.prototype.setObject = function(key, value) {
+			    this.setItem(key, JSON.stringify(value));
+			};
+			// 
+			Storage.prototype.getObject = function(key) {
+			    return eval('(' + this.getItem(key) + ')');
+			};
+			
+			function update_tasks()
+			{
+				$('#task_list').html('');
+				var tasks = localStorage.getObject("tasks");
+
+				for (task in tasks)
+				{
+					var checked = tasks[task][1] ? "checked" : "";
+					$('#task_list').append('<li><label><input type="checkbox" name="'+task+'" '+checked+'/>'+tasks[task][0]+'</label></li>');
+				}
+			}
+			
+			$(document).ready(function(){	
+				update_tasks();
+				
+				//save
+				$(':checkbox').live('click', function(){
+					return $('#task_form').submit();
+				});
+				
+				$('#task_form').submit(function(e){
+					e.preventDefault();
+
+					var tasks = {};
+					$('#task_form :checkbox').each(function(){
+						var el = $(this);
+						tasks[el.attr('name')] = [el.parent().text(), el.is(':checked')];
+					});
+					
+					
+					localStorage.setObject("tasks", tasks);
+				});
+				
+				//new
+				$('#task_new_form').submit(function(e){
+					e.preventDefault();
+					update_tasks();
+
+					var name = $(this).children('input').val();
+					if (name)
+					{
+						$(this).children('input').val('');
+						$('#task_list').append('<li><label><input type="checkbox" name="task'+($(':checkbox').length+1)+'" />'+name+'</label></li>');
+					}
+					$(this).children('input').blur(); //fix for iOS kb
+					$('#task_form').submit();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<h1>TODO:</h1>
+		<form id="task_form">
+		<ul id="task_list"></ul>
+		</form>
+		
+		<form id="task_new_form">
+			<input type="text" name="new_task" placeholder="Enter new task...">
+		</form>
+
+	</body>
+</html>
