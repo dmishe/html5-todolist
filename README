@@ -1,4 +1,5 @@
 Simple todo list based on HTML5 Web Storage.
+Works on any HTML5 browser and iOS devices.
 
 TODO: 
 -Add HTML5 app cache in order to work offline.
